@@ -1,0 +1,25 @@
+{
+  "ok": "Ok",
+  "winner_titles": [
+    "Sweet!",
+    "Uhuuu...",
+    "Wooowww...",
+    "Nice!"
+  ],
+  "loser_titles": [
+    "Ooops...",
+    "Whaaaat...",
+    "Ca#@L*@$#"
+  ],
+  "cancel": "Cancel",
+  "save": "Save",
+  "update": "Update",
+  "loading": "Loading...",
+  "loading_wait": "Loading... Please wait",
+  "actions": "Actions",
+  "scores": "You ate: ",
+  "gameOver": "You have been bitten by a spider",
+  "loser": "You Lose...",
+  "winner": "You Win!",
+  "restart_game": "Play Again"
+}
