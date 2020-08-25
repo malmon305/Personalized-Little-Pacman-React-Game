@@ -9,7 +9,7 @@ import LandingPage from "./RaspberryPacman/LandingPage/LandingPage";
 
 const props = {
     autoStart: true,
-    gridSize: 25,
+    gridSize: 17,
     animate: process.env.NODE_ENV !== 'development',
     locale: 'en',
     onEnd: () => {
@@ -31,7 +31,7 @@ const WithRouting = () => {
 function renderApp(App = RaspberryPacman) {
     ReactDOM.render(
         <React.StrictMode>
-            <WithRouting/>,
+            <WithRouting/>
         </React.StrictMode>,
         document.getElementById('root')
     );
