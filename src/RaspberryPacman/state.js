@@ -1,4 +1,8 @@
-import { WEST } from './constants';
+import {EAST, NORTH, WEST} from './constants';
+
+function isBigFood([posX, posY]) {
+    return (posX === 0 || posX === 25) && (posY === 6 || posY === 26);
+}
 
 function generateFood() {
     const genRow = (startX, posY, num) => new Array(num).fill(0)
@@ -51,7 +55,8 @@ function generateFood() {
         .map((position, index) => ({
             key: index,
             position,
-            eaten: false
+            eaten: false,
+            big: isBigFood(position)
         }));
 }
 
@@ -61,6 +66,7 @@ export default function getInitialState() {
         hasError: false,
         stepTime: Date.now(),
         score: 0,
+        win: false,
         player: {
             position: [12.5, 6],
             direction: WEST,
@@ -69,7 +75,40 @@ export default function getInitialState() {
         },
         alertShow: false,
         lost: false,
-
+        monsters: [
+            {
+                id: 'monster-red',
+                direction: NORTH,
+                startingDirection: NORTH,
+                position: [12.5, 15],
+                startingPosition: [12.5, 15],
+                deadTime: 0,
+                eatingTime: 0,
+                color: 'red'
+            },
+            {
+                id: 'monster-cyan',
+                direction: EAST,
+                startingDirection: EAST,
+                position: [10.5, 15],
+                startingPosition: [10.5, 15],
+                deadTime: 0,
+                eatingTime: 0,
+                color: 'cyan',
+                directionBias: true
+            },
+            {
+                id: 'monster-pink',
+                direction: NORTH,
+                startingDirection: NORTH,
+                position: [12.5, 17],
+                startingPosition: [12.5, 17],
+                deadTime: 0,
+                eatingTime: 0,
+                color: 'pink',
+                directionBias: true
+            }
+        ],
         food: generateFood()
     };
 }

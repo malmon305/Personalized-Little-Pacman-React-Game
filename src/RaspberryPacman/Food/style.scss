@@ -9,4 +9,12 @@
   margin-top: -2px;
   border-radius: 100%;
   background-color: $component-food-color;
+
+  &.big {
+    width: 25px;
+    height: 25px;
+    margin-left: -18px;
+    margin-top: -10px;
+    background-color: transparent;
+  }
 }

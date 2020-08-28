@@ -33,5 +33,12 @@ export const PLAYER_RADIUS = 0.8;
 
 export const WALL_COLOUR = '#eb0165';
 
+export const EATING_TIME_SECONDS = 5;
+
+export const MONSTER_SPEED_ATTACK = 5;
+export const MONSTER_SPEED_RETREAT = 3;
 export const PLAYER_SPEED = 6;
 
+export const MONSTER_DEATH_TIME_SECONDS = 7;
+export const MONSTER_HOME_RANGE = [37, 18, 8, 12];
+export const MONSTER_HOME_EXIT_COL = 12.5;

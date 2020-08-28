@@ -1,5 +1,13 @@
 import {orderPolarity} from './movement';
+import {animateMonsters} from './monster';
 import {animatePlayer} from './player';
+
+function collectEatenMonsterScores(newState, oldState) {
+    const scoreDelta = newState.monsters.reduce((sum, { deadTime }, index) =>
+        sum + 1000 * ((deadTime > 0 && oldState.monsters[index].deadTime === 0) >> 0), 0);
+
+    return { ...newState, score: newState.score + scoreDelta };
+}
 
 export function animate(state, { time = Date.now() } = {}) {
 
@@ -9,7 +17,11 @@ export function animate(state, { time = Date.now() } = {}) {
         return state;
     }
 
-    return animatePlayer({...state, stepTime: time}, timeSeconds);
+    const statePlayerAnimated = animatePlayer({ ...state, stepTime: time }, timeSeconds);
+
+    const stateMonstersAnimated = animateMonsters(statePlayerAnimated, timeSeconds, state.player);
+
+    return collectEatenMonsterScores(stateMonstersAnimated, state);
 }
 
 export function changeDirection(state, { direction }) {

@@ -6,10 +6,36 @@ import { animate, changeDirection } from './game';
 import Stage from './Stage';
 import TopBar from './TopBar';
 import AllFood from './Food/All';
-
+import Monster from './Monster';
 import Player from './Player';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-const $t = require('./locales/en.json');
+let $t = require('./locales/en.json');
+
+const AppSwal = withReactContent(Swal);
+
+function showDialogWinner() {
+    const titles = $t.winner_titles;
+
+    return Swal.fire({
+        title: titles.random(),
+    });
+}
+
+function showDialogLose() {
+    const titles = $t.loser_titles;
+
+    return AppSwal.fire({
+        title: titles.random(),
+        text: $t.gameOver,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: $t.restart_game,
+        cancelButtonText: $t.cancel
+    });
+}
 
 export default class RaspberryPacman extends Component {
     constructor(props) {
@@ -21,8 +47,10 @@ export default class RaspberryPacman extends Component {
             isRunning: props.autoStart
         };
 
+        this.handleTheEnd = this.handleTheEnd.bind(this);
 
         this.onKey = evt => {
+            // eslint-disable-next-line no-undefined
             if (KEY_COMMANDS[evt.key] !== undefined) {
                 return this.changeDirection(KEY_COMMANDS[evt.key]);
             }
@@ -31,7 +59,9 @@ export default class RaspberryPacman extends Component {
         };
     }
 
+
     componentDidMount() {
+
         this.timers = {
             start: null,
             animate: null
@@ -51,11 +81,11 @@ export default class RaspberryPacman extends Component {
             this.setState({ stepTime: Date.now() });
 
             this.step();
-
         }, 3000);
     }
 
     componentWillUnmount() {
+
         document.body.style.overflow = 'unset';
         window.removeEventListener('keydown', this.onKey);
 
@@ -78,6 +108,47 @@ export default class RaspberryPacman extends Component {
         this.setState(changeDirection(this.state, { direction }));
     }
 
+    // eslint-disable-next-line react/no-deprecated
+    componentWillReceiveProps() {
+        console.log('App - componentWillReceiveProps');
+    }
+
+    handleTheEnd() {
+        this.setState({
+            isRunning: false
+        });
+
+        if (this.state.lost && !this.state.alertShow) {
+            showDialogLose()
+                .then(result => {
+                    if (result.value) {
+                        // Play Again
+                        this.componentWillUnmount();
+                        this.setState(getInitialState());
+                        this.componentDidMount();
+                    }
+                });
+
+        } else {
+            showDialogWinner()
+                .then(result => {
+                    if (result.value) {
+                        // Play Again
+                        this.setState({
+                            isRunning: true
+                        });
+                        this.componentWillUnmount();
+                        this.setState(getInitialState());
+                        this.componentDidMount();
+                    }
+                });
+        }
+
+        if (this.state.onEnd) {
+            this.state.onEnd();
+        }
+    }
+
     render() {
         if (this.state.hasError) {
             return <h1>Something went wrong.</h1>;
@@ -85,11 +156,16 @@ export default class RaspberryPacman extends Component {
 
         const props = { gridSize: 12, ...this.props };
 
+        const monsters = this.state.monsters.map(({ id, ...monster }) => (
+            <Monster key={id} {...props} {...monster} />
+        ));
+
         return (
             <div className="wrapper-container">
                 <Stage {...props} />
                 <TopBar $t={$t} score={this.state.score} lost={this.state.lost} />
                 <AllFood {...props} food={this.state.food} />
+                {monsters}
                 <Player {...props} {...this.state.player} lost={this.state.lost} isRunning={this.state.isRunning} onEnd={this.handleTheEnd} />
             </div>
         );

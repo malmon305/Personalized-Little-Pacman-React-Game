@@ -1,4 +1,4 @@
-import { PLAYER_SPEED } from '../constants';
+import {EATING_TIME_SECONDS, PLAYER_SPEED} from '../constants';
 import { getChangedVector, getNewPosition, orderPolarity } from './movement';
 
 function getEatenFood(food, player, newPosition) {
@@ -32,15 +32,43 @@ function getNewPlayerVector(player, time) {
     }
 }
 
+function eatMonsters(state) {
+    return {
+        ...state,
+        monsters: state.monsters.map(monster => ({
+            ...monster,
+            eatingTime: EATING_TIME_SECONDS
+        }))
+    };
+}
+
 export function animatePlayer(state, time) {
     const newVector = getNewPlayerVector(state.player, time);
     const eatenFoodIndex = getEatenFood(state.food, state.player, newVector.position);
     const food = state.food.slice();
     let scoreDelta = 0;
+
+    // eating and adding score
     if (eatenFoodIndex > -1) {
         food[eatenFoodIndex].eaten = true;
 
         scoreDelta = 1 + (food[eatenFoodIndex] >> 0);
+    }
+
+    const eating = eatenFoodIndex > -1 && food[eatenFoodIndex].big;
+
+    const nextState = {
+        ...state,
+        score: state.score + scoreDelta,
+        player: {
+            ...state.player,
+            ...newVector
+        },
+        food
+    };
+
+    if (eating) {
+        return eatMonsters(nextState);
     }
 
     return {

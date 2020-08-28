@@ -1,11 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './commons';
 import './RaspberryPacman/styles/index.scss';
 import { HashRouter as Router, Switch, Route} from "react-router-dom";
 import RaspberryPacman from './RaspberryPacman';
 
 import * as serviceWorker from './serviceWorker';
 import LandingPage from "./RaspberryPacman/LandingPage/LandingPage";
+
+Array.prototype.random = function () {
+    return this[Math.floor((Math.random()* (this.length-1) ))];
+};
+String.prototype.equalIgnoreCase = function(str) {
+    return (str != null &&
+        typeof str === 'string' &&
+        this.toUpperCase() === str.toUpperCase());
+};
 
 const props = {
     autoStart: true,
